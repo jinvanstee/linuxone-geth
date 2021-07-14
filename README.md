@@ -164,7 +164,7 @@ INFO [07-13|14:44:47.341] New local node record                    seq=1 id=9b27
 INFO [07-13|14:44:47.341] Started P2P networking                   self="enode://f7d7a68e02dab66bb638d54b5d3062ddbd1667a9e7acfefac8c7704ef428b2bc8fba1b30e3b949cbd8d5b8ae2fa6f5094104e36d1b5d043f2f62c772d0f21cd0@127.0.0.1:30303?discport=0"
 ```
 <b>Please make a note of the IPC endpoint referenced in the `IPC endpoint opened` line in the output</b>. In the above example, it is `/home/linux1/private_network/chaindata/geth.ipc`. You will need this URL to attach a geth console to it so that you can run web3js commands to interact with your private network.
-## Attach console, run some w3js commands from there to do a basic test:
+## Attach console, run some web3.js commands from there to do a basic test:
 From a separate terminal window, run the following command to attach a console to your geth private network. Use the IPC endpoint URL from your private network output in the previous step.
 ```
 $ geth attach /home/linux1/private_network/chaindata/geth.ipc
