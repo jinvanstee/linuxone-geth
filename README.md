@@ -2,6 +2,7 @@
 This repo describes the steps to build and install Go Ethereum on LinuxONE or Linux on IBM Z. In addition to base installation, it will cover:
 * How to setup a single-node private Ethereum network. Private Ethereum networks are good for developing and testing out smart contracts or for private consortium use cases.
 * How to deploy a simple smart contract to it and transact on it using the Truffle smart contract development framework.
+For more information about Ethereum Private Networks, please see the [Go Ethereum documentation](https://geth.ethereum.org/docs/interface/private-network).
 
 ## Versions used in this tutorial
 * Ubuntu 20.04.2 LTS (GNU/Linux 5.4.0-77-generic s390x)
@@ -38,7 +39,7 @@ $ export PATH=$PATH:$GOPATH/bin
 $ echo "export PATH=$PATH:$GOPATH/bin" >> "${HOME}/.bashrc"
 ```
 ### Installing and testing Go Ethereum
-First download the Go Ethereum source package and its dependencies:
+<b>First download the Go Ethereum source package and its dependencies:</b>
 ```
 $ go get -d github.com/ethereum/go-ethereum
 go: downloading github.com/ethereum/go-ethereum v1.10.4
@@ -46,12 +47,12 @@ go: downloading golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
 go: downloading github.com/btcsuite/btcd v0.20.1-beta
 go: downloading golang.org/x/sys v0.0.0-20210420205809-ac73e9fd8988![image](https://user-images.githubusercontent.com/8147238/125550289-78e734c8-34f7-4698-abbc-e183c786c094.png)
 ```
-Then navigate to the Go Ethereum package directory and install geth and other developer tools:
+<b>Then navigate to the Go Ethereum package directory and install geth and other developer tools:</b>
 ```
 $ cd $GOPATH/pkg/mod/github.com/ethereum/go-ethereum@v1.10.4/
 $ go install ./...
 ```
-You will begin to see a lot of output related to dependent packages being downloaded. This is expected. There should be no error messages during the installation process. After installation completes, verify the `geth` version with:
+You will begin to see a lot of output related to dependent packages being downloaded. This is expected. There should be no error messages during the installation process. <b>After installation completes, verify the `geth` version with:</b>
 ```
 $ geth version
 Geth
@@ -62,7 +63,7 @@ Operating System: linux
 GOPATH=/home/linux1/go
 GOROOT=/usr/local/go
 ```
-Now let's run the test suite against it:
+<b>Now let's run the test suite associated with Go Ethereum:</b>
 ```
 $ cd $GOPATH/pkg/mod/github.com/ethereum/go-ethereum@v1.10.4/
 $ go test -v ./eth
@@ -74,15 +75,15 @@ ok  	github.com/ethereum/go-ethereum/eth	13.106s
 ```
 ## Creating and starting a private network
 ### Setup
-Create directories for your private network.
+<b>Create directories for your private network.</b>
 ```
 $ cd ~
 $ mkdir private_network
 $ mkdir private_network/chaindata
 ```
-All the assets related to your private network will be kept inside the `private_network` directory. For a description of all the directories and what they mean go here.
-### Create your `genesis.json` file for your private network. 
-This file describes the rules associated with your private network. For a desription of all the settings you can customize in a `genesis.json` file please see here.
+All the assets related to your private network will be kept inside the `private_network` directory. Go Ethereum saves its internal states for the network in the chaindata directory. In this release of `geth` the keystore that contains keys associated with your private network accounts will also be in the chaindata directory.
+### Create your Genesis block configuration for your private network. 
+Every blockchain starts with the genesis block. You can configure your private network genesis block using the file `genesis.json`. This file describes initial parameters associated with your private network. For a desription of the various parameters you can customize in a `genesis.json` file please see the [Go Ethereum GitHub repo](https://github.com/ethereum/go-ethereum) and the [Go Ethereum documentation for private networks](https://geth.ethereum.org/docs/interface/private-network). Below, I'm using a very basic, generic `genesis.json` file that should meet basic dev/test needs. Feel free to customize to suit your needs.
 ```
 $ cd private_network
 ```
@@ -107,7 +108,7 @@ Use your favorite text editor and create the `genesis.json` file as follows:
     }
 }
 ```
-I'm using a very basic, generic `genesis.json` file that should meet basic dev/test needs. Feel free to customize to suit your needs. The Go Ethereum repo recommends "changing the nonce to some random value so you prevent unknown remote nodes from being able to connect to you." You should also select a random chainID that doesn't intefere with other chainIDs that you interact with to minimize confusion.
+[The Go Ethereum repo](https://github.com/ethereum/go-ethereum) recommends "changing the nonce to some random value so you prevent unknown remote nodes from being able to connect to you." You should also select a random chainID that doesn't intefere with other chainIDs that you interact with to minimize confusion.
 ### Initialize the private network
 ```
 $ cd ~/private_network
@@ -128,7 +129,7 @@ INFO [07-13|14:24:39.596] Persisted trie from memory database      nodes=0 size=
 INFO [07-13|14:24:39.596] Successfully wrote genesis state         database=lightchaindata hash=e4d9fb..65bf61
 ```
 ### Now you can start your network
-I am starting it with very minimal parameters. For a list of all the `geth` parameters you can use please see here.
+I am starting it with very minimal parameters. For a list of all the `geth` parameters you can use please see [the Go Ethereum documentation](https://geth.ethereum.org/docs/interface/command-line-options) or run `geth help` from the terminal.
 ```
 $ cd ~/private_network
 $ geth --datadir=./chaindata --nodiscover
@@ -162,7 +163,7 @@ INFO [07-13|14:44:47.341] IPC endpoint opened                      url=/home/lin
 INFO [07-13|14:44:47.341] New local node record                    seq=1 id=9b27ff1d50395e54 ip=127.0.0.1 udp=0 tcp=30303
 INFO [07-13|14:44:47.341] Started P2P networking                   self="enode://f7d7a68e02dab66bb638d54b5d3062ddbd1667a9e7acfefac8c7704ef428b2bc8fba1b30e3b949cbd8d5b8ae2fa6f5094104e36d1b5d043f2f62c772d0f21cd0@127.0.0.1:30303?discport=0"
 ```
-Please make a note of the IPC endpoint. In the above example, it is `/home/linux1/private_network/chaindata/geth.ipc`. You will need this URL to attach a geth console to it so that you can run web3js commands to interact with your private network.
+<b>Please make a note of the IPC endpoint referenced in the `IPC endpoint opened` line in the output</b>. In the above example, it is `/home/linux1/private_network/chaindata/geth.ipc`. You will need this URL to attach a geth console to it so that you can run web3js commands to interact with your private network.
 ## Attach console, run some w3js commands from there to do a basic test:
 From a separate terminal window, run the following command to attach a console to your geth private network. Use the IPC endpoint URL from your private network output in the previous step.
 ```
@@ -180,7 +181,7 @@ at block: 0 (Wed Dec 31 1969 19:00:00 GMT-0500 (EST))
 To exit, press ctrl-d
 > 
 ```
-The console accepts web3js function calls. These are javascript functions written to interact with the Ethereum network. For a complete guide to all the web3js functions please see here. For now we will run through a set of basic commands, to create a couple of accounts, start the miner, check balances on the accounts, and transfer some ether from one account to another. From the `geth console`, type the following commands.
+The Geth JavaScript console exposes the full web3 JavaScript Dapp API and further administrative APIs. These are JavaScript functions written to interact with an Ethereum node over HTTP, IPC or WebSocket. For a complete guide to all the web3.js functions please see [the official web3.js documentation](https://web3js.readthedocs.io/en/v1.2.9/). There is a note in the Go Ethereum documentation that warns "the web3 version bundled within geth is very old, and not up to date with official docs". For now we will run through a set of basic commands, to create a couple of accounts, start the miner, check balances on the accounts, and transfer some ether from one account to another. From the `geth console`, type the following commands.
 ```
 > eth.accounts
 []
